@@ -2,48 +2,52 @@
   
   <div class="main-form">
     <form
-    id="app"
-    @submit="checkForm"
-    action="https://vuejs.org/"
     method="post"
   >
 
     <fieldset>
       <legend>Информация о клиенте:</legend>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.surname.$error }">
         <label for="surname">Фамилия*</label>
-        <input type="text" id="surname" name="surname">
+        <input v-model="surname" type="text" id="surname" name="surname"
+        class="form__input" 
+        :class="{ error: $v.surname.$error }"
+        @change="$v.surname.$touch()"
+        >
       </p>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.name.$error }">
         <label for="name">Имя*</label>
-        <input type="text" name="name">
+        <input type="text" name="name" v-model="name"
+        class="form__input"
+        :class="{ error: $v.name.$error }"
+        @change="$v.name.$touch()">
       </p>
 
       <p>
         <label for="patronymic">Отчество</label>
-        <input type="text" name="patronymic">
+        <input type="text" name="patronymic" v-model="patronymic">
       </p>
 
       <p>
         <label for="DOB">Дата рождения*</label>
-        <input type="date" name="DOB">
+        <input type="date" name="DOB" v-model="DOB">
       </p>
 
       <p>
         <label for="tel">Номер телефона*</label>
-        <input type="tel" name="tel">
+        <input type="tel" name="tel" v-model="tel">
       </p>
 
       <p>
         <label for="gender">Пол</label>
-        <input type="text" name="gender">
+        <input type="text" name="gender" v-model="gender">
       </p>
 
       <p>
         <label for="client_group">Группа клиентов*</label>
-        <select multiple size="3" name="client_group">
+        <select multiple size="3" name="client_group" v-model="client_group">
           <option value="VIP">VIP</option>
           <option value="Проблемные">Проблемные</option>
           <option value="ОМС">ОМС</option>
@@ -52,7 +56,7 @@
 
       <p>
         <label for="attending_doctor">Лечащий врач</label>
-        <select name="attending_doctor">
+        <select name="attending_doctor" v-model="attending_doctor">
           <option value="Иванов">Иванов</option>
           <option value="Захаров">Захаров</option>
           <option value="Чернышева">Чернышева</option>
@@ -61,7 +65,7 @@
 
       <p>
         <label for="send_check">Не отправлять СМС</label>
-        <input type="checkbox" name="send_check">
+        <input type="checkbox" name="send_check" v-model="send_check">
       </p>
 
     </fieldset>
@@ -71,32 +75,32 @@
 
       <p>
         <label for="postcode">Индекс</label>
-        <input type="text" id="postcode" name="postcode">
+        <input type="text" id="postcode" name="postcode" v-model="postcode">
       </p>
 
       <p>
         <label for="country">Страна</label>
-        <input type="text" id="country" name="country">
+        <input type="text" id="country" name="country" v-model="country">
       </p>
 
       <p>
         <label for="region">Область</label>
-        <input type="text" id="region" name="region">
+        <input type="text" id="region" name="region" v-model="region">
       </p>
 
       <p>
         <label for="city">Город*</label>
-        <input type="text" id="city" name="city">
+        <input type="text" id="city" name="city" v-model="city">
       </p>
 
       <p>
         <label for="street">Улица</label>
-        <input type="text" id="street" name="street">
+        <input type="text" id="street" name="street" v-model="street">
       </p>
       <p>
 
         <label for="house">Дом</label>
-        <input type="text" id="house" name="house">
+        <input type="text" id="house" name="house" v-model="house">
       </p>
 
     </fieldset>
@@ -106,7 +110,7 @@
 
       <p>
         <label for="document_type">Тип документа*</label>
-        <select name="document_type">
+        <select name="document_type" v-model="document_type">
           <option value="Паспорт">Паспорт</option>
           <option value="Свидетельство о рождении">Свидетельство о рождении</option>
           <option value="Вод. удостоверение">Вод. удостоверение</option>
@@ -115,27 +119,27 @@
 
       <p>
         <label for="passport_series">Серия</label>
-        <input type="text" id="passport_series" name="passport_series">
+        <input type="text" id="passport_series" name="passport_series" v-model="passport_series">
       </p>
 
       <p>
-        <label for="region">Область</label>
-        <input type="text" id="region" name="region">
+        <label for="passport_region">Область</label>
+        <input type="text" id="passport_region" name="passport_region" v-model="passport_region">
       </p>
 
       <p>
         <label for="passport_ID">Номер</label>
-        <input type="text" id="passport_ID" name="passport_ID">
+        <input type="text" id="passport_ID" name="passport_ID" v-model="passport_ID">
       </p>
 
       <p>
         <label for="issued_by">Кем выдан</label>
-        <input type="text" id="issued_by" name="issued_by">
+        <input type="text" id="issued_by" name="issued_by" v-model="issued_by">
       </p>
 
       <p>
         <label for="date_of_issue">Дата выдачи*</label>
-        <input type="text" id="date_of_issue" name="date_of_issue">
+        <input type="text" id="date_of_issue" name="date_of_issue" v-model="date_of_issue">
       </p>
     </fieldset>
     
@@ -151,6 +155,7 @@
 </template>
 
 <script>
+import { required, minLength, maxLength, numeric, between } from 'vuelidate/lib/validators';
 export default {
   name: 'FormComponent',
   props: {
@@ -158,29 +163,62 @@ export default {
   },
   data(){
     return {
-      errors: [],
-      name: null,
-      age: null,
-      movie: null
+      surname: '',
+      name: '',
+      patronymic: '',
+      DOB: '',
+      tel: '',
+      gender: '',
+      client_group: [],
+      attending_doctor: '',
+      send_check: '',
+      postcode: '',
+      country: '',
+      region: '',
+      city: '',
+      street: '',
+      house: '',
+      document_type: '',
+      passport_series: '',
+      passport_region: '',
+      passport_ID: '',
+      issued_by: '',
+      date_of_issue: ''
     }
   },
+  validations: {
+    surname: {
+      required
+    },
+    name: {
+      required
+    },
+    DOB: {
+      required
+    },
+    tel: {
+      required,
+      minLength: minLength(11),
+      maxLength: maxLength(11),
+      numeric,
+      regex: /^7\d{10}$/
+    },
+    client_group: {
+      required
+    },
+    city: {
+      required
+    },
+    document_type: {
+      required
+    },
+    date_of_issue: {
+      required
+    }
+
+  },
   methods: {
-    checkForm: function (e) {
-      if (this.name && this.age) {
-        return true;
-      }
 
-      this.errors = [];
-
-      if (!this.name) {
-        this.errors.push('Требуется указать имя.');
-      }
-      if (!this.age) {
-        this.errors.push('Требуется указать возраст.');
-      }
-
-      e.preventDefault();
-      }
   }
 }
 </script>
@@ -254,5 +292,9 @@ input:-webkit-autofill:focus
   -webkit-text-fill-color: $font-color
   -webkit-box-shadow: 0 0 0px 1000px $form-bg inset
   transition: background-color 5000s ease-in-out 0s
+
+input
+  &.error
+    border-color: red
   
 </style>
