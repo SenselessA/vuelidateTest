@@ -3,6 +3,7 @@
   <div class="main-form">
     <form
     method="post"
+    @submit.prevent="submitHandler"
   >
 
     <fieldset>
@@ -10,19 +11,28 @@
 
       <p class="form-group" :class="{ 'form-group--error': $v.surname.$error }">
         <label for="surname">Фамилия*</label>
-        <input v-model="surname" type="text" id="surname" name="surname"
-        class="form__input" 
-        :class="{ error: $v.surname.$error }"
-        @change="$v.surname.$touch()"
+        <input type="text" id="surname" name="surname"
+          class="form__input" 
+          :class="{ error: ($v.surname.$dirty && !$v.surname.required) }"
+          v-model.trim="surname"
         >
+        <small 
+          class="helper-text invalid"
+          v-if="$v.surname.$dirty && !$v.surname.required"
+        >Поле Фамилия не должно быть пустым</small>
       </p>
 
       <p class="form-group" :class="{ 'form-group--error': $v.name.$error }">
         <label for="name">Имя*</label>
-        <input type="text" name="name" v-model="name"
-        class="form__input"
-        :class="{ error: $v.name.$error }"
-        @change="$v.name.$touch()">
+        <input type="text" name="name"
+          class="form__input"
+          :class="{ error: ($v.name.$dirty && !$v.name.required) }"
+          v-model.trim="name"
+        >
+        <small 
+          class="helper-text invalid"
+          v-if="$v.name.$dirty && !$v.name.required"
+        >Поле Имя не должно быть пустым</small>
       </p>
 
       <p>
@@ -30,14 +40,38 @@
         <input type="text" name="patronymic" v-model="patronymic">
       </p>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.DOB.$error }">
         <label for="DOB">Дата рождения*</label>
-        <input type="date" name="DOB" v-model="DOB">
+        <input type="date" name="DOB"
+          class="form__input"
+          :class="{ error: ($v.DOB.$dirty && !$v.DOB.required) }"
+          v-model.trim="DOB"
+        >
+        <small 
+          class="helper-text invalid"
+          v-if="$v.DOB.$dirty && !$v.DOB.required"
+        >Поле Дата рождения не должно быть пустым</small>
       </p>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.DOB.$error }">
         <label for="tel">Номер телефона*</label>
-        <input type="tel" name="tel" v-model="tel">
+        <input type="tel" name="tel" 
+          class="form__input"
+          :class="{ error: (($v.tel.$dirty && !$v.tel.required) ||
+                            ($v.tel.$dirty && !$v.tel.telRegex)
+                           )
+                  }"
+          v-model.trim="tel"
+        >
+        <small 
+          class="helper-text invalid"
+          v-if="$v.tel.$dirty && !$v.tel.required"
+        >Поле Номер телефона не должно быть пустым</small>
+      
+        <small 
+          class="helper-text invalid"
+          v-else-if="$v.tel.$dirty && !$v.tel.telRegex"
+        >Поле Номер телефона должен начинаться с 7 и содержать 11 цифр</small>
       </p>
 
       <p>
@@ -45,14 +79,29 @@
         <input type="text" name="gender" v-model="gender">
       </p>
 
-      <p>
-        <label for="client_group">Группа клиентов*</label>
-        <select multiple size="3" name="client_group" v-model="client_group">
-          <option value="VIP">VIP</option>
-          <option value="Проблемные">Проблемные</option>
-          <option value="ОМС">ОМС</option>
-        </select>
-      </p>
+      <div class="form-flex-container">
+        <p class="form-group" :class="{ 'form-group--error': $v.client_group.$error }">
+          <label for="client_group">Группа клиентов*</label>
+          <select multiple size="3" name="client_group" 
+          
+          v-model="client_group"
+
+          class="form__input"
+          :class="{ error: (($v.client_group.$dirty && !$v.client_group.required)
+                            )
+                  }"
+            v-model.trim="client_group"
+          >
+            <option value="VIP">VIP</option>
+            <option value="Проблемные">Проблемные</option>
+            <option value="ОМС">ОМС</option>
+          </select>
+          <small 
+            class="helper-text invalid"
+            v-if="$v.client_group.$dirty && !$v.client_group.required"
+          >Поле Группа клиентов не должно быть пустым</small>
+        </p>
+      </div>
 
       <p>
         <label for="attending_doctor">Лечащий врач</label>
@@ -88,9 +137,15 @@
         <input type="text" id="region" name="region" v-model="region">
       </p>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.city.$error }">
         <label for="city">Город*</label>
-        <input type="text" id="city" name="city" v-model="city">
+        <input type="text" id="city" name="city"
+          class="form__input"
+          :class="{ error: (($v.city.$dirty && !$v.city.required)
+                           )
+                  }"
+          v-model.trim="city"
+        >
       </p>
 
       <p>
@@ -108,14 +163,28 @@
     <fieldset>
       <legend>Паспорт:</legend>
 
-      <p>
-        <label for="document_type">Тип документа*</label>
-        <select name="document_type" v-model="document_type">
-          <option value="Паспорт">Паспорт</option>
-          <option value="Свидетельство о рождении">Свидетельство о рождении</option>
-          <option value="Вод. удостоверение">Вод. удостоверение</option>
-        </select>
-      </p>
+      <div class="form-flex-container">
+        <p class="form-group" :class="{ 'form-group--error': $v.document_type.$error }">
+          <label for="document_type">Тип документа*</label>
+          <select name="document_type"
+
+          class="form__input"
+          :class="{ error: (($v.document_type.$dirty && !$v.document_type.required)
+                            )
+                  }"
+            v-model.trim="document_type"
+          
+          >
+            <option value="Паспорт">Паспорт</option>
+            <option value="Свидетельство о рождении">Свидетельство о рождении</option>
+            <option value="Вод. удостоверение">Вод. удостоверение</option>
+          </select>
+          <small 
+            class="helper-text invalid"
+            v-if="$v.document_type.$dirty && !$v.document_type.required"
+          >Поле Тип документа не должно быть пустым</small>
+        </p>
+      </div>
 
       <p>
         <label for="passport_series">Серия</label>
@@ -137,9 +206,19 @@
         <input type="text" id="issued_by" name="issued_by" v-model="issued_by">
       </p>
 
-      <p>
+      <p class="form-group" :class="{ 'form-group--error': $v.date_of_issue.$error}">
         <label for="date_of_issue">Дата выдачи*</label>
-        <input type="text" id="date_of_issue" name="date_of_issue" v-model="date_of_issue">
+        <input type="text" id="date_of_issue" name="date_of_issue"
+        class="form__input"
+          :class="{ error: (($v.date_of_issue.$dirty && !$v.date_of_issue.required)
+                           )
+                  }"
+          v-model.trim="date_of_issue"
+        >
+        <small 
+            class="helper-text invalid"
+            v-if="$v.date_of_issue.$dirty && !$v.date_of_issue.required"
+          >Поле Группа клиентов не должно быть пустым</small>
       </p>
     </fieldset>
     
@@ -151,11 +230,14 @@
     >
   </form>
 
+  <small class="valid-form-text" v-if="validateForm">Форма успешно прошла валидацию, новый клиент успешно создан!</small>
+
   </div>
 </template>
 
 <script>
-import { required, minLength, maxLength, numeric, between } from 'vuelidate/lib/validators';
+import { required, minLength, maxLength, numeric, helpers } from 'vuelidate/lib/validators';
+const telRegex = helpers.regex('alpha', /^7\d{10}/);
 export default {
   name: 'FormComponent',
   props: {
@@ -183,7 +265,8 @@ export default {
       passport_region: '',
       passport_ID: '',
       issued_by: '',
-      date_of_issue: ''
+      date_of_issue: '',
+      validateForm: false
     }
   },
   validations: {
@@ -198,10 +281,7 @@ export default {
     },
     tel: {
       required,
-      minLength: minLength(11),
-      maxLength: maxLength(11),
-      numeric,
-      regex: /^7\d{10}$/
+      telRegex
     },
     client_group: {
       required
@@ -218,7 +298,19 @@ export default {
 
   },
   methods: {
+    submitHandler() {
+      if (this.$v.$invalid) {
+        this.$v.$touch()
+        return
+      }
 
+      const formData = {
+        surname: this.surname,
+        name: this.name
+      }
+      
+      this.validateForm = true
+    }
   }
 }
 </script>
@@ -234,6 +326,9 @@ $font-size: 14pt
 $font-face: 'Fjalla One'
 $font-color: #2A293E
 
+p
+  margin-bottom: 20px
+
 fieldset 
   border: none
 
@@ -241,11 +336,26 @@ legend
   font-size: 30px
   margin-bottom: 20px
 
+.form-group
+  small
+    margin-top: 5px
+    word-wrap: break-word
+  
+
+.valid-form-text 
+  font-size: 20px
+  margin-top: 10px
+  color: green
+
 .main-form
   background: $form-bg
   padding: 50px 100px
   border: 2px solid rgba(0,0,0,1)
   box-shadow: 15px 15px 1px $form-shadow, 15px 15px 1px 2px rgba(0,0,0,1)
+
+@media screen and (max-width: 580px)
+  .main-form
+    padding: 25px 50px
 
 input
   display: block
@@ -253,7 +363,7 @@ input
   font-size: $font-size
   line-height: $font-size * 2
   font-family: $font-face
-  margin-bottom: $font-size * 2
+  /** margin-bottom: $font-size * 2 **/
   border: none
   border-bottom: 5px solid rgba(0,0,0,1)
   background: $form-bg
@@ -296,5 +406,15 @@ input:-webkit-autofill:focus
 input
   &.error
     border-color: red
+
+
+.form-flex-container p
+  display: flex
+  flex-direction: column
+
+  &.form-group--error select
+    border-bottom: 5px solid
+    border-bottom-color: red 
+  
   
 </style>

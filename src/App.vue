@@ -21,10 +21,9 @@ export default {
 *
   margin: 0
   padding: 0
+  box-sizing: border-box
 
 body
-  width: 100vw
-  height: 100vh
   display: grid
   align-items: center
   justify-items: center
